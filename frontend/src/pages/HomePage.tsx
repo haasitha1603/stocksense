@@ -611,31 +611,7 @@ export const HomePage: React.FC = () => {
             onCtaClick={() => navigate('/intelligence/scenarios')}
           />
         </div>
-
-        {/* PostgreSQL Schema Code Block */}
-        <div className="mt-14 max-w-4xl mx-auto rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black p-6 font-mono text-xs shadow-xl">
-          <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 text-[11px]">
-            <span>stocksense_db_schema.sql</span>
-            <span>PostgreSQL 18 Atomic Storage</span>
-          </div>
-          <pre className="pt-4 overflow-x-auto text-[11px] leading-relaxed text-zinc-600 dark:text-zinc-400">
-            <span className="text-zinc-400">-- Immutable Double-Entry Ledger Invariant</span>{'\n'}
-            <span className="text-purple-600 dark:text-purple-400 font-bold">CREATE TABLE</span> stock_movements ({'\n'}
-            {'  '}id <span className="text-blue-600 dark:text-blue-400">SERIAL PRIMARY KEY</span>,{'\n'}
-            {'  '}product_id <span className="text-blue-600 dark:text-blue-400">INTEGER NOT NULL</span>,{'\n'}
-            {'  '}movement_type <span className="text-blue-600 dark:text-blue-400">VARCHAR(50) NOT NULL</span>,{'\n'}
-            {'  '}quantity <span className="text-blue-600 dark:text-blue-400">DOUBLE PRECISION NOT NULL</span>,{'\n'}
-            {'  '}transfer_link_id <span className="text-blue-600 dark:text-blue-400">INTEGER</span>,{'\n'}
-            {'  '}created_at <span className="text-blue-600 dark:text-blue-400">TIMESTAMPTZ DEFAULT NOW()</span>{'\n'}
-            );{'\n\n'}
-            <span className="text-emerald-600 dark:text-emerald-400">✓ Invariant: Net balance delta strictly equals 0.0</span>{'\n'}
-            <span className="text-emerald-600 dark:text-emerald-400">✓ Grounding: Real DB state fed to gemini-3.8-flash</span>
-          </pre>
-        </div>
       </section>
-
-
-      {/* ========================================================================= */}
       {/* 7. TRUST & FOOTER */}
       {/* ========================================================================= */}
       <footer className="border-t border-zinc-200 dark:border-zinc-800 py-12 px-4 lg:px-8 max-w-7xl mx-auto">

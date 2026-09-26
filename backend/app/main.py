@@ -50,8 +50,41 @@ def health_check():
         "environment": settings.ENVIRONMENT
     }
 
-@app.get("/", tags=["Root"])
-def root():
-    return {
-        "message": "Welcome to StockSense API. Refer to /docs for interactive OpenAPI documentation."
-    }
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi import HTTPException
+
+FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+
+if FRONTEND_DIST.exists() and (FRONTEND_DIST / "index.html").exists():
+    assets_dir = FRONTEND_DIST / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="frontend_assets")
+
+    @app.get("/", tags=["Frontend"])
+    def root_frontend():
+        return FileResponse(FRONTEND_DIST / "index.html")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa_frontend(full_path: str):
+        if (
+            full_path.startswith("api")
+            or full_path.startswith("docs")
+            or full_path.startswith("redoc")
+            or full_path.startswith("openapi.json")
+            or full_path == "health"
+        ):
+            raise HTTPException(status_code=404, detail="Not Found")
+
+        file_candidate = FRONTEND_DIST / full_path
+        if file_candidate.is_file():
+            return FileResponse(file_candidate)
+
+        return FileResponse(FRONTEND_DIST / "index.html")
+else:
+    @app.get("/", tags=["Root"])
+    def root():
+        return {
+            "message": "Welcome to StockSense API. Refer to /docs for interactive OpenAPI documentation."
+        }

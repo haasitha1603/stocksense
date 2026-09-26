@@ -183,8 +183,11 @@ export const App: React.FC = () => {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
-              {/* Public Landing Home Page */}
+              {/* Public Landing Home Page & Aliases */}
               <Route path="/" element={<HomePage />} />
+              <Route path="/home" element={<HomePage />} />
+              <Route path="/index.html" element={<HomePage />} />
+              <Route path="/index" element={<HomePage />} />
 
               {/* Public Guide / Query Directory Route */}
               <Route path="/guide" element={<GuideRoute />} />
@@ -198,8 +201,21 @@ export const App: React.FC = () => {
               <Route path="/contact" element={<PublicPageLayout pageTitle="Contact & Support"><ContactPage /></PublicPageLayout>} />
               <Route path="/privacy" element={<PublicPageLayout pageTitle="Privacy & Compliance"><PrivacyPage /></PublicPageLayout>} />
 
-              {/* Convenience redirect */}
+              {/* Top-Level Shortcut Redirects */}
               <Route path="/app" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/inventory" element={<Navigate to="/inventory/stock-levels" replace />} />
+              <Route path="/stock" element={<Navigate to="/inventory/stock-levels" replace />} />
+              <Route path="/stock-levels" element={<Navigate to="/inventory/stock-levels" replace />} />
+              <Route path="/ledger" element={<Navigate to="/inventory/ledger" replace />} />
+              <Route path="/receipts" element={<Navigate to="/operations/receipts" replace />} />
+              <Route path="/deliveries" element={<Navigate to="/operations/deliveries" replace />} />
+              <Route path="/transfers" element={<Navigate to="/operations/transfers" replace />} />
+              <Route path="/adjustments" element={<Navigate to="/operations/adjustments" replace />} />
+              <Route path="/radar" element={<Navigate to="/intelligence/radar" replace />} />
+              <Route path="/what-if" element={<Navigate to="/intelligence/scenarios" replace />} />
+              <Route path="/scenarios" element={<Navigate to="/intelligence/scenarios" replace />} />
+              <Route path="/warehouses" element={<Navigate to="/management/warehouses" replace />} />
+              <Route path="/alerts" element={<Navigate to="/management/alerts" replace />} />
 
               {/* Protected Workspace Routes (wrapped in Layout) */}
               <Route
