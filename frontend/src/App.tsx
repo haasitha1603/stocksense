@@ -5,7 +5,11 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Layout } from './components/layout/Layout';
 
-// Pages
+// Public Landing & Query Pages
+import { HomePage } from './pages/HomePage';
+import { AppGuidePage } from './pages/AppGuidePage';
+
+// Workspace Pages
 import { DashboardPage } from './pages/DashboardPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
@@ -40,10 +44,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-500">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-black text-zinc-500 font-sans">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
-          <div className="text-xs font-semibold">Loading StockSense Workspace...</div>
+          <div className="h-8 w-8 rounded-full border-2 border-zinc-900 dark:border-white border-t-transparent animate-spin" />
+          <div className="text-xs font-mono font-semibold">Loading StockSense Workspace...</div>
         </div>
       </div>
     );
@@ -63,35 +67,41 @@ export const App: React.FC = () => {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
-              {/* Public Auth Routes */}
+              {/* Public Landing Home Page */}
+              <Route path="/" element={<HomePage />} />
+
+              {/* Public Auth & Information Routes */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
 
-              {/* Protected App Routes */}
+              {/* Convenience redirect */}
+              <Route path="/app" element={<Navigate to="/dashboard" replace />} />
+
+              {/* Protected Workspace Routes (wrapped in Layout) */}
               <Route
-                path="/"
                 element={
                   <ProtectedRoute>
                     <Layout />
                   </ProtectedRoute>
                 }
               >
-                <Route index element={<DashboardPage />} />
-                <Route path="products" element={<ProductsPage />} />
-                <Route path="products/:id" element={<ProductDetailPage />} />
-                <Route path="inventory/stock-levels" element={<StockLevelsPage />} />
-                <Route path="inventory/ledger" element={<LedgerPage />} />
-                <Route path="operations/receipts" element={<ReceiptsPage />} />
-                <Route path="operations/deliveries" element={<DeliveriesPage />} />
-                <Route path="operations/transfers" element={<TransfersPage />} />
-                <Route path="operations/adjustments" element={<AdjustmentsPage />} />
-                <Route path="intelligence/scenarios" element={<WhatIfLabPage />} />
-                <Route path="intelligence/radar" element={<RadarPage />} />
-                <Route path="management/warehouses" element={<WarehousesPage />} />
-                <Route path="management/alerts" element={<AlertsPage />} />
-                <Route path="about" element={<AboutPage />} />
-                <Route path="contact" element={<ContactPage />} />
-                <Route path="privacy" element={<PrivacyPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/guide" element={<AppGuidePage />} />
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/products/:id" element={<ProductDetailPage />} />
+                <Route path="/inventory/stock-levels" element={<StockLevelsPage />} />
+                <Route path="/inventory/ledger" element={<LedgerPage />} />
+                <Route path="/operations/receipts" element={<ReceiptsPage />} />
+                <Route path="/operations/deliveries" element={<DeliveriesPage />} />
+                <Route path="/operations/transfers" element={<TransfersPage />} />
+                <Route path="/operations/adjustments" element={<AdjustmentsPage />} />
+                <Route path="/intelligence/scenarios" element={<WhatIfLabPage />} />
+                <Route path="/intelligence/radar" element={<RadarPage />} />
+                <Route path="/management/warehouses" element={<WarehousesPage />} />
+                <Route path="/management/alerts" element={<AlertsPage />} />
               </Route>
 
               {/* 404 Route */}

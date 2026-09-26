@@ -1,28 +1,30 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
-    --bg-primary: #f8fafc;
+    --bg-primary: #fafafa;
     --bg-surface: #ffffff;
-    --bg-subtle: #f1f5f9;
-    --border-subtle: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
+    --bg-subtle: #f4f4f5;
+    --border-subtle: #e4e4e7;
+    --text-primary: #09090b;
+    --text-secondary: #52525b;
+    --text-muted: #71717a;
+    --accent: #18181b;
+    --accent-hover: #27272a;
   }
 
   .dark {
-    --bg-primary: #090d16;
-    --bg-surface: #0f172a;
-    --bg-subtle: #1e293b;
-    --border-subtle: #334155;
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
-    --accent: #3b82f6;
-    --accent-hover: #60a5fa;
+    --bg-primary: #000000;
+    --bg-surface: #09090b;
+    --bg-subtle: #141417;
+    --border-subtle: #27272a;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --accent: #fafafa;
+    --accent-hover: #ffffff;
   }
 
   body {

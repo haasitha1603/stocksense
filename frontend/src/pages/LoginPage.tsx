@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LogIn, KeyRound, Sparkles, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { LogIn, KeyRound, Sparkles, AlertCircle, ArrowRight, Sun, Moon, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { api } from '../services/api';
 
 export const LoginPage: React.FC = () => {
@@ -18,6 +19,7 @@ export const LoginPage: React.FC = () => {
   const [resetMsg, setResetMsg] = useState('');
 
   const { login } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -26,7 +28,7 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
     try {
       await login({ email, password });
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Login failed. Please verify credentials.');
     } finally {
@@ -65,52 +67,67 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl p-8 space-y-6">
+    <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-white flex items-center justify-center p-4 font-sans transition-colors">
+      {/* Top right theme toggle */}
+      <div className="fixed top-4 right-4">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-neutral-900 text-zinc-700 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors cursor-pointer shadow-sm"
+          title="Toggle appearance"
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </button>
+      </div>
+
+      <div className="w-full max-w-md bg-white dark:bg-neutral-950 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl p-8 space-y-6">
         {/* Brand */}
         <div className="text-center space-y-2">
-          <div className="inline-flex h-12 w-12 rounded-2xl bg-blue-600 text-white items-center justify-center font-bold text-2xl shadow-lg shadow-blue-500/25">
+          <NavLink to="/" className="inline-flex h-12 w-12 rounded-2xl bg-zinc-900 dark:bg-white text-white dark:text-black items-center justify-center font-black text-2xl shadow-md">
             S
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          </NavLink>
+          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
             Welcome to StockSense
           </h1>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-zinc-500 font-light">
             Sign in to access your inventory telemetry and risk radar.
           </p>
         </div>
 
         {/* Demo Fast-Track Pill */}
-        <div className="p-3.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-xs space-y-2">
-          <div className="flex items-center justify-between font-semibold text-blue-900 dark:text-blue-300">
+        <div className="p-3.5 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs space-y-2">
+          <div className="flex items-center justify-between font-bold text-zinc-900 dark:text-white">
             <span className="flex items-center gap-1.5">
-              <Sparkles className="h-4 w-4 text-blue-600" />
-              Judging Demo Fast-Track
+              <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+              Demo Fast-Track
             </span>
-            <span className="text-[10px] uppercase bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded">Quick Test</span>
+            <span className="text-[10px] font-mono uppercase bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-300">
+              1-Click
+            </span>
           </div>
-          <p className="text-[11px] text-blue-700 dark:text-blue-400">
-            One-click autofill pre-seeded demonstration credentials:
+          <p className="text-[11px] text-zinc-600 dark:text-zinc-400">
+            Click below to autofill pre-seeded demonstration credentials:
           </p>
           <button
             type="button"
             onClick={handleAutofillAdmin}
-            className="w-full py-1.5 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+            className="w-full py-2 px-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-black text-xs font-bold shadow-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors cursor-pointer"
           >
-            Autofill Operations Director Credentials
+            Autofill Demo Admin Credentials
           </button>
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-center gap-2">
+          <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-semibold flex items-center gap-2">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4 text-sm">
+        <form onSubmit={handleLogin} className="space-y-4 text-xs font-medium">
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
+            <label className="block font-mono uppercase text-zinc-600 dark:text-zinc-400 mb-1">
               Email Address
             </label>
             <input
@@ -119,21 +136,21 @@ export const LoginPage: React.FC = () => {
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="admin@stocksense.io"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-zinc-500"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">
+              <label className="block font-mono uppercase text-zinc-600 dark:text-zinc-400">
                 Password
               </label>
               <button
                 type="button"
                 onClick={() => setShowResetModal(true)}
-                className="text-xs text-blue-600 hover:underline"
+                className="text-[11px] text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
               >
-                Forgot Password?
+                Forgot?
               </button>
             </div>
             <input
@@ -141,95 +158,98 @@ export const LoginPage: React.FC = () => {
               required
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+              placeholder="••••••••••••"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-zinc-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-black font-bold text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? 'Authenticating...' : (
               <>
-                <span>Sign In to Workspace</span>
+                <span>Sign In to StockSense</span>
                 <ArrowRight className="h-4 w-4" />
               </>
             )}
           </button>
         </form>
 
-        <div className="text-center text-xs text-slate-500">
-          Don't have a workspace yet?{' '}
-          <NavLink to="/register" className="text-blue-600 hover:underline font-semibold">
-            Create an Account
+        <div className="text-center text-xs text-zinc-500">
+          Need a workspace?{' '}
+          <NavLink to="/register" className="text-zinc-900 dark:text-white font-bold hover:underline">
+            Create New Workspace
           </NavLink>
         </div>
       </div>
 
-      {/* Mock OTP Reset Modal */}
+      {/* Mock Password Reset Modal */}
       {showResetModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 text-xs sm:text-sm">
-            <div className="flex items-center justify-between border-b pb-2">
-              <h2 className="font-bold text-slate-900 dark:text-white">Reset Account Password</h2>
-              <button onClick={() => setShowResetModal(false)}>✕</button>
-            </div>
-
-            <div className="p-2.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 text-[11px]">
-              Note: This is a clearly marked mock development OTP flow for testing.
-            </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white dark:bg-neutral-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+            <h3 className="font-bold text-sm text-zinc-900 dark:text-white">
+              Reset Password (Demo OTP)
+            </h3>
+            <p className="text-xs text-zinc-500">
+              Enter your email to request the demo OTP verification code:
+            </p>
 
             {resetMsg && (
-              <div className="p-2 rounded bg-blue-50 text-blue-700 text-xs font-mono">
+              <div className="p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs font-mono">
                 {resetMsg}
               </div>
             )}
 
-            {!resetMsg.includes('Use OTP') ? (
-              <form onSubmit={handleResetRequest} className="space-y-3">
-                <div>
-                  <label className="block font-semibold mb-1">Your Email</label>
-                  <input
-                    type="email"
-                    required
-                    value={resetEmail}
-                    onChange={e => setResetEmail(e.target.value)}
-                    className="w-full p-2 border rounded"
-                  />
-                </div>
-                <button type="submit" className="w-full py-2 bg-blue-600 text-white rounded font-semibold">
-                  Request Mock OTP
+            <form onSubmit={handleResetRequest} className="space-y-3">
+              <input
+                type="email"
+                required
+                placeholder="your.email@company.com"
+                value={resetEmail}
+                onChange={e => setResetEmail(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs"
+              />
+              <button
+                type="submit"
+                className="w-full py-2 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-black font-bold text-xs"
+              >
+                Send Mock OTP
+              </button>
+            </form>
+
+            <form onSubmit={handleResetConfirm} className="space-y-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+              <input
+                type="text"
+                placeholder="OTP Code (123456)"
+                value={resetOtp}
+                onChange={e => setResetOtp(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs"
+              />
+              <input
+                type="password"
+                placeholder="New Password (min 6 chars)"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowResetModal(false)}
+                  className="flex-1 py-2 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs"
+                >
+                  Cancel
                 </button>
-              </form>
-            ) : (
-              <form onSubmit={handleResetConfirm} className="space-y-3">
-                <div>
-                  <label className="block font-semibold mb-1">Enter OTP (e.g. 123456)</label>
-                  <input
-                    type="text"
-                    required
-                    value={resetOtp}
-                    onChange={e => setResetOtp(e.target.value)}
-                    className="w-full p-2 border rounded"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold mb-1">New Password</label>
-                  <input
-                    type="password"
-                    required
-                    value={newPassword}
-                    onChange={e => setNewPassword(e.target.value)}
-                    className="w-full p-2 border rounded"
-                  />
-                </div>
-                <button type="submit" className="w-full py-2 bg-emerald-600 text-white rounded font-semibold">
-                  Update Password
+                <button
+                  type="submit"
+                  className="flex-1 py-2 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-black font-bold text-xs"
+                >
+                  Update
                 </button>
-              </form>
-            )}
+              </div>
+            </form>
           </div>
         </div>
       )}

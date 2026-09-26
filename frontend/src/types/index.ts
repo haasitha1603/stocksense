@@ -342,10 +342,16 @@ export interface CopilotResponse {
   answer: string;
   grounded_evidence: Record<string, any>;
   cited_products: string[];
-  suggested_actions: Array<{
+  suggested_actions?: Array<{
     type: string;
     label: string;
     target: string;
   }>;
+  recommended_action?: {
+    action_type: string;
+    target_sku: string;
+    target_name: string;
+  };
   model_used: string;
+  is_fallback?: boolean;
 }

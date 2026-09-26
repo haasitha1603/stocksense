@@ -14,35 +14,172 @@ from app.api.deps import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
+import re
+import uuid
+from app.models import (
+    User, Organization, Warehouse, Location, Category, Supplier,
+    Product, StockLevel, BusinessCriticality, ProductStatus
+)
+
+def _provision_starter_workspace(db: Session, org_id: int):
+    # 1. Categories
+    cat_raw = Category(organization_id=org_id, name="Raw Materials", description="Metals, alloys, and structural elements")
+    cat_elec = Category(organization_id=org_id, name="Electronic Components", description="Circuits, sensors, and controllers")
+    cat_comp = Category(organization_id=org_id, name="Machined Components", description="Hydraulics, valves, and precision parts")
+    db.add_all([cat_raw, cat_elec, cat_comp])
+    db.flush()
+
+    # 2. Supplier
+    supplier = Supplier(
+        organization_id=org_id,
+        name="Apex Industrial Logistics",
+        contact_email="supply@apexindustrial.example",
+        phone="+1-800-555-0199",
+        lead_time_days=10
+    )
+    db.add(supplier)
+    db.flush()
+
+    # 3. Warehouses & Locations
+    wh_main = Warehouse(
+        organization_id=org_id,
+        name="Main Distribution Center",
+        code="WH-MAIN",
+        address="100 Logistics Way, Bay 1",
+        is_active=True
+    )
+    wh_annex = Warehouse(
+        organization_id=org_id,
+        name="Regional Annex B",
+        code="WH-ANNEX",
+        address="240 Terminal Road, Bay 4",
+        is_active=True
+    )
+    db.add_all([wh_main, wh_annex])
+    db.flush()
+
+    loc_main_stock = Location(
+        organization_id=org_id,
+        warehouse_id=wh_main.id,
+        name="Internal Storage",
+        code="WH-MAIN/STOCK",
+        location_type="Internal",
+        is_active=True
+    )
+    loc_main_input = Location(
+        organization_id=org_id,
+        warehouse_id=wh_main.id,
+        name="Inbound Dock",
+        code="WH-MAIN/INPUT",
+        location_type="Input",
+        is_active=True
+    )
+    loc_main_output = Location(
+        organization_id=org_id,
+        warehouse_id=wh_main.id,
+        name="Outbound Staging",
+        code="WH-MAIN/OUTPUT",
+        location_type="Output",
+        is_active=True
+    )
+
+    loc_annex_stock = Location(
+        organization_id=org_id,
+        warehouse_id=wh_annex.id,
+        name="Storage Floor",
+        code="WH-ANNEX/STOCK",
+        location_type="Internal",
+        is_active=True
+    )
+    db.add_all([loc_main_stock, loc_main_input, loc_main_output, loc_annex_stock])
+    db.flush()
+
+    # 4. Starter Products with Stock Levels
+    p_steel = Product(
+        organization_id=org_id,
+        category_id=cat_raw.id,
+        supplier_id=supplier.id,
+        name="High-Tensile Steel Rods",
+        sku="SKU-STL-001",
+        description="Grade-A industrial steel rods (12mm diameter)",
+        unit_of_measure="Units",
+        unit_cost=42.50,
+        reorder_level=50.0,
+        reorder_quantity=100.0,
+        lead_time_days=10,
+        business_criticality=BusinessCriticality.CRITICAL.value,
+        status=ProductStatus.ACTIVE.value
+    )
+    p_pcb = Product(
+        organization_id=org_id,
+        category_id=cat_elec.id,
+        supplier_id=supplier.id,
+        name="Programmable Logic Boards",
+        sku="SKU-PCB-002",
+        description="High-density multi-layer controller boards",
+        unit_of_measure="Units",
+        unit_cost=115.00,
+        reorder_level=80.0,
+        reorder_quantity=50.0,
+        lead_time_days=14,
+        business_criticality=BusinessCriticality.STANDARD.value,
+        status=ProductStatus.ACTIVE.value
+    )
+    db.add_all([p_steel, p_pcb])
+    db.flush()
+
+    # Stock levels
+    db.add_all([
+        StockLevel(organization_id=org_id, product_id=p_steel.id, warehouse_id=wh_main.id, location_id=loc_main_stock.id, on_hand=85.0, reserved=0.0, available=85.0),
+        StockLevel(organization_id=org_id, product_id=p_steel.id, warehouse_id=wh_annex.id, location_id=loc_annex_stock.id, on_hand=160.0, reserved=0.0, available=160.0),
+        StockLevel(organization_id=org_id, product_id=p_pcb.id, warehouse_id=wh_main.id, location_id=loc_main_stock.id, on_hand=210.0, reserved=0.0, available=210.0)
+    ])
+    db.flush()
+
 @router.post("/register", response_model=Token)
 def register(user_in: UserCreate, db: Session = Depends(get_db)):
+    if len(user_in.password.strip()) < 6:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password must be at least 6 characters long."
+        )
+
     # Check if user already exists
-    existing = db.query(User).filter(User.email == user_in.email).first()
+    existing = db.query(User).filter(User.email == user_in.email.strip().lower()).first()
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="An account with this email address already exists."
+            detail="An account with this email address already exists. Please log in instead."
         )
 
-    # Create Organization
-    org_code = user_in.organization_name.lower().replace(" ", "-")[:20] + "-org"
-    existing_org = db.query(Organization).filter(Organization.code == org_code).first()
-    if existing_org:
-        org = existing_org
-    else:
-        org = Organization(
-            name=user_in.organization_name,
-            code=org_code
+    # Create Organization with unique code
+    raw_name = user_in.organization_name.strip() if user_in.organization_name else "Acme Logistics"
+    slug = re.sub(r'[^a-zA-Z0-9]', '-', raw_name.lower())[:15] or "org"
+    org_code = f"{slug}-{uuid.uuid4().hex[:6]}"
+
+    org = Organization(
+        name=raw_name,
+        code=org_code
+    )
+    db.add(org)
+    db.flush()
+
+    # Provision starter facilities and inventory
+    try:
+        _provision_starter_workspace(db, org.id)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to initialize workspace facilities: {str(e)}"
         )
-        db.add(org)
-        db.flush()
 
     user = User(
         organization_id=org.id,
-        email=user_in.email,
+        email=user_in.email.strip().lower(),
         hashed_password=hash_password(user_in.password),
-        full_name=user_in.full_name,
-        role=user_in.role or "admin",
+        full_name=user_in.full_name.strip(),
+        role="admin",
         is_active=True
     )
     db.add(user)
