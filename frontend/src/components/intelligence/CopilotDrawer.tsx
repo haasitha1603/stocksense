@@ -18,6 +18,7 @@ import {
 import { api } from '../../services/api';
 import { CopilotResponse } from '../../types';
 import { useNavigate } from 'react-router-dom';
+import { AIVoice } from '../ui/AIVoice';
 
 interface CopilotDrawerProps {
   isOpen: boolean;
@@ -225,50 +226,36 @@ export const CopilotDrawer: React.FC<CopilotDrawerProps> = ({ isOpen, onClose })
 
           {/* Voice Waveform Live Visualizer Component */}
           <AnimatePresence>
-            {(isListening || isSpeaking) && (
+            {isListening && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="px-4 py-3 bg-zinc-900 dark:bg-neutral-900 border-b border-zinc-800 flex items-center justify-between"
+                className="px-4 py-2 bg-zinc-50 dark:bg-neutral-900 border-b border-zinc-200 dark:border-zinc-800"
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 h-5">
-                    {[0.3, 0.7, 1.0, 0.6, 0.4, 0.9, 0.5].map((scale, i) => (
-                      <motion.div
-                        key={i}
-                        animate={{
-                          scaleY: isListening || isSpeaking ? [0.2, scale * 1.5, 0.3] : 0.2
-                        }}
-                        transition={{
-                          repeat: Infinity,
-                          duration: 0.6 + i * 0.1,
-                          ease: 'easeInOut'
-                        }}
-                        className={`w-1 rounded-full ${
-                          isListening ? 'bg-rose-500' : 'bg-emerald-400'
-                        }`}
-                        style={{ height: '100%', originY: 0.5 }}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs font-mono text-zinc-300">
-                    {isListening ? 'Listening to voice query...' : 'Speaking answer aloud...'}
-                  </span>
-                </div>
-
-                {isListening && (
+                <AIVoice
+                  externalListening={isListening}
+                  onListeningChange={(listening) => {
+                    if (!listening && isListening) {
+                      if (recognitionRef.current) recognitionRef.current.stop();
+                      setIsListening(false);
+                      if (query.trim()) handleSend(query);
+                    }
+                  }}
+                />
+                <div className="flex justify-center pb-2">
                   <button
                     type="button"
                     onClick={() => {
                       if (recognitionRef.current) recognitionRef.current.stop();
+                      setIsListening(false);
                       if (query.trim()) handleSend(query);
                     }}
-                    className="px-2.5 py-1 rounded-lg bg-white text-black text-[11px] font-bold hover:bg-zinc-200 cursor-pointer"
+                    className="px-3 py-1 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-black text-xs font-bold hover:bg-zinc-800 dark:hover:bg-zinc-200 cursor-pointer shadow-xs"
                   >
-                    Done & Query
+                    Send Spoken Query &rarr;
                   </button>
-                )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

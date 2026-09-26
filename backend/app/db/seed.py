@@ -13,7 +13,7 @@ from app.models import (
 def utc_now():
     return datetime.now(timezone.utc)
 
-def seed_database():
+def seed_database(force_refresh=False):
     # Ensure tables exist
     Base.metadata.create_all(bind=engine)
     db: Session = SessionLocal()
@@ -22,8 +22,14 @@ def seed_database():
         # Check if already seeded
         existing_org = db.query(Organization).filter(Organization.code == "stocksense-corp").first()
         if existing_org:
-            print("Database already seeded with demo organization.")
-            return
+            if force_refresh:
+                from sqlalchemy import text
+                print("Refreshing database tables...")
+                db.execute(text("TRUNCATE TABLE organizations CASCADE;"))
+                db.commit()
+            else:
+                print("Database already seeded with demo organization.")
+                return
 
         print("Seeding StockSense demo data...")
 
@@ -475,4 +481,6 @@ def seed_database():
         db.close()
 
 if __name__ == "__main__":
-    seed_database()
+    import sys
+    refresh = "--refresh" in sys.argv or "-r" in sys.argv
+    seed_database(force_refresh=refresh)
