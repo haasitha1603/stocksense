@@ -27,7 +27,6 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
 // Interactive UI Components
-import { MouseEffectCard } from '../components/ui/MouseEffectCard';
 import { AIVoice } from '../components/ui/AIVoice';
 import { CardFlip } from '../components/ui/CardFlip';
 import { WarehouseTransferCard } from '../components/ui/WarehouseTransferCard';
@@ -635,48 +634,6 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* 6. OPTIONAL INTERACTIVE MOUSE SPRING PLAYGROUND (AT BOTTOM) */}
-      {/* ========================================================================= */}
-      <section className="py-16 px-4 lg:px-8 max-w-7xl mx-auto border-t border-zinc-200 dark:border-zinc-800">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 bg-zinc-100 dark:bg-neutral-950 p-8 sm:p-12 rounded-3xl border border-zinc-200 dark:border-zinc-800">
-          <div className="max-w-lg space-y-4">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-              Interactive UI Physics
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
-              Test the Repelling Cursor Physics
-            </h2>
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-light leading-relaxed">
-              Hover over the card to test the Kokonut UI spring-repulsion physics on the dot grid.
-            </p>
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={handleLaunchDemo}
-                className="px-5 py-2.5 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-black font-bold text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all cursor-pointer shadow-md"
-              >
-                Enter App Dashboard
-              </button>
-            </div>
-          </div>
-
-          <div className="w-full max-w-md">
-            <MouseEffectCard
-              title="StockSense"
-              subtitle="Hover to repel dots"
-              topText="Kokonut Physics"
-              topSubtext="Spring Repulsion"
-              primaryCtaText="Launch Demo"
-              onPrimaryCtaClick={handleLaunchDemo}
-              secondaryCtaText="Guide"
-              onSecondaryCtaClick={() => navigate('/guide')}
-              footerText="Active Multi-Warehouse Mesh"
-              className="w-full"
-            />
-          </div>
-        </div>
-      </section>
 
       {/* ========================================================================= */}
       {/* 7. TRUST & FOOTER */}

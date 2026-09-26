@@ -5,7 +5,7 @@ import { Navbar } from './Navbar';
 import { CookieConsent } from './CookieConsent';
 import { CopilotDrawer } from '../intelligence/CopilotDrawer';
 
-export const Layout: React.FC = () => {
+export const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [copilotOpen, setCopilotOpen] = useState(false);
 
@@ -26,7 +26,7 @@ export const Layout: React.FC = () => {
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          <Outlet />
+          {children || <Outlet />}
         </main>
 
         {/* Global Footer */}

@@ -18,10 +18,16 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   const response = await fetch(url, { ...options, headers });
 
   if (response.status === 401) {
-    // If not already on login page, redirect or clear token
-    if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {
-      localStorage.removeItem('stocksense_token');
-      localStorage.removeItem('stocksense_user');
+    // Clear invalid session tokens immediately
+    localStorage.removeItem('stocksense_token');
+    localStorage.removeItem('stocksense_user');
+
+    const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+    const publicPrefixes = ['/', '/guide', '/about', '/contact', '/privacy', '/login', '/register'];
+    const isPublic = publicPrefixes.some(p => (p === '/' ? currentPath === '/' : currentPath.startsWith(p)));
+
+    // Only redirect to /login if the user was navigating within a protected workspace route
+    if (!isPublic) {
       window.location.href = '/login';
     }
     throw new Error('Authentication session expired or unauthorized.');
