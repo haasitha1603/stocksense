@@ -20,12 +20,13 @@ import {
   Activity,
   Sliders,
   Compass,
-  Mic
+  Mic,
+  Code
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
-// Kokonut UI Components
+// Interactive UI Components
 import { MouseEffectCard } from '../components/ui/MouseEffectCard';
 import { AIVoice } from '../components/ui/AIVoice';
 import { CardFlip } from '../components/ui/CardFlip';
@@ -36,8 +37,8 @@ export const HomePage: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
-  // Interactive Live Demo Simulator State on Home Page
-  const [activeTab, setActiveTab] = useState<'simulation' | 'transfer' | 'voice' | 'radar'>('simulation');
+  // Interactive Live Demo Simulator State
+  const [activeTab, setActiveTab] = useState<'simulation' | 'transfer' | 'voice' | 'radar' | 'ledger'>('simulation');
   const [isTransferApplied, setIsTransferApplied] = useState(false);
   const [demandMultiplier, setDemandMultiplier] = useState(1.0);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -69,7 +70,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="relative min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-white selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black overflow-x-hidden font-sans transition-colors duration-300">
-      {/* Subtle tech background grid */}
+      {/* Subtle tech background grid (clean, no annoying mouse spotlight) */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0000000a_1px,transparent_1px),linear-gradient(to_bottom,#0000000a_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
       {/* ========================================================================= */}
@@ -97,7 +98,7 @@ export const HomePage: React.FC = () => {
 
           {/* Quick Anchor Links */}
           <nav className="hidden md:flex items-center gap-7 text-xs font-mono uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
-            <NavLink to="/guide" className="hover:text-black dark:hover:text-white transition-colors flex items-center gap-1.5">
+            <NavLink to="/guide" className="hover:text-black dark:hover:text-white transition-colors flex items-center gap-1.5 font-bold text-zinc-900 dark:text-white">
               <Compass className="h-3.5 w-3.5 text-emerald-500" />
               <span>Where to View What</span>
             </NavLink>
@@ -110,6 +111,9 @@ export const HomePage: React.FC = () => {
             <a href="#architecture" className="hover:text-black dark:hover:text-white transition-colors">
               Invariants
             </a>
+            <NavLink to="/privacy" className="hover:text-black dark:hover:text-white transition-colors">
+              Privacy & GDPR
+            </NavLink>
           </nav>
 
           {/* Right Action Buttons */}
@@ -158,114 +162,102 @@ export const HomePage: React.FC = () => {
       </header>
 
       {/* ========================================================================= */}
-      {/* 2. HERO SECTION WITH MOUSE EFFECT CARD (REPELLING DOT PATTERN) */}
+      {/* 2. CLASSIC FULL-WIDTH HERO SECTION */}
       {/* ========================================================================= */}
-      <section className="relative pt-16 pb-16 px-4 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          {/* Left Text Column */}
-          <div className="lg:col-span-7 space-y-6 text-left">
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-xs font-mono text-zinc-700 dark:text-zinc-300"
+      <section className="relative pt-20 pb-16 px-4 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center max-w-4xl mx-auto space-y-6">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-xs font-mono text-zinc-700 dark:text-zinc-300"
+          >
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Odoo-Grade Inventory Invariants + Gemini 3.8 Flash</span>
+          </motion.div>
+
+          {/* Main Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-[1.08]"
+          >
+            Autonomous Multi-Warehouse <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-900 via-zinc-600 to-zinc-400 dark:from-white dark:via-zinc-300 dark:to-zinc-500">
+              Inventory Intelligence.
+            </span>
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed"
+          >
+            Know what you have. See what could go wrong. Know what to do next — and verify the updated stock and auditable ledger in under 30 seconds.
+          </motion.p>
+
+          {/* Hero CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-wrap items-center justify-center gap-3.5 pt-2"
+          >
+            <button
+              type="button"
+              onClick={handleLaunchDemo}
+              disabled={isSimulating}
+              className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-zinc-900 text-white dark:bg-white dark:text-black font-bold text-sm hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Odoo-Grade Inventory Invariants + Gemini 3.8 Flash</span>
-            </motion.div>
+              <Zap className="h-4 w-4 fill-current" />
+              <span>Launch Live Preloaded Demo</span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-4xl sm:text-6xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-[1.08]"
+            <NavLink
+              to="/register"
+              className="flex items-center gap-2 px-6 py-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white font-semibold text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              Autonomous Multi-Warehouse <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-900 via-zinc-600 to-zinc-400 dark:from-white dark:via-zinc-300 dark:to-zinc-500">
-                Inventory Intelligence.
-              </span>
-            </motion.h1>
+              <span>Create Isolated Workspace</span>
+            </NavLink>
 
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-base text-zinc-600 dark:text-zinc-400 font-light leading-relaxed max-w-xl"
+            <NavLink
+              to="/guide"
+              className="flex items-center gap-2 px-5 py-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 font-semibold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all"
             >
-              Know what you have. See what could go wrong. Know what to do next — and verify the updated stock and auditable ledger in under 30 seconds.
-            </motion.p>
+              <Compass className="h-4 w-4 text-emerald-500" />
+              <span>Where to View What</span>
+            </NavLink>
+          </motion.div>
 
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-wrap items-center gap-3 pt-2"
-            >
-              <button
-                type="button"
-                onClick={handleLaunchDemo}
-                disabled={isSimulating}
-                className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-zinc-900 text-white dark:bg-white dark:text-black font-bold text-sm hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-              >
-                <Zap className="h-4 w-4 fill-current" />
-                <span>Launch Live Preloaded Demo</span>
-                <ArrowRight className="h-4 w-4" />
-              </button>
-
-              <NavLink
-                to="/register"
-                className="flex items-center gap-2 px-6 py-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white font-semibold text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <span>Create Workspace</span>
-              </NavLink>
-
-              <NavLink
-                to="/guide"
-                className="flex items-center gap-1.5 px-4 py-3.5 rounded-2xl text-xs font-mono text-zinc-500 hover:text-black dark:hover:text-white transition-colors"
-              >
-                <Compass className="h-4 w-4 text-emerald-500" />
-                <span>Where to view what?</span>
-              </NavLink>
-            </motion.div>
-
-            {/* Fast Stats */}
-            <div className="grid grid-cols-3 gap-3 pt-6 border-t border-zinc-200 dark:border-zinc-800">
-              <div>
-                <div className="text-[10px] font-mono text-zinc-400">RESOLUTION LOOP</div>
-                <div className="text-lg font-extrabold text-zinc-900 dark:text-white">&lt; 30 Seconds</div>
-              </div>
-              <div>
-                <div className="text-[10px] font-mono text-zinc-400">DOUBLE ENTRY</div>
-                <div className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">100% Conserved</div>
-              </div>
-              <div>
-                <div className="text-[10px] font-mono text-zinc-400">SIMULATION ENGINE</div>
-                <div className="text-lg font-extrabold text-zinc-900 dark:text-white">Zero-Mutation</div>
-              </div>
+          {/* Quick Metrics Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-8 max-w-3xl mx-auto text-left">
+            <div className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-xs">
+              <div className="text-[10px] font-mono text-zinc-400">OPERATIONAL LOOP</div>
+              <div className="text-lg font-extrabold text-zinc-900 dark:text-white tracking-tight">&lt; 30 Seconds</div>
             </div>
-          </div>
-
-          {/* Right Column: Mouse Effect Card (Repelling Dot Physics) */}
-          <div className="lg:col-span-5 flex justify-center">
-            <MouseEffectCard
-              title="StockSense MVP"
-              subtitle="Hover around this card to observe the interactive spring repulsion dot physics."
-              topText="Kokonut UI Physics"
-              topSubtext="Active Multi-Warehouse Mesh"
-              primaryCtaText="Launch Live Demo"
-              onPrimaryCtaClick={handleLaunchDemo}
-              secondaryCtaText="Inspect Guide"
-              onSecondaryCtaClick={() => navigate('/guide')}
-              footerText="Double-Entry Invariant Protected"
-              className="w-full max-w-md shadow-2xl"
-            />
+            <div className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-xs">
+              <div className="text-[10px] font-mono text-zinc-400">DOUBLE ENTRY</div>
+              <div className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">100% Conserved</div>
+            </div>
+            <div className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-xs">
+              <div className="text-[10px] font-mono text-zinc-400">WHAT-IF ENGINE</div>
+              <div className="text-lg font-extrabold text-zinc-900 dark:text-white tracking-tight">Zero-Mutation</div>
+            </div>
+            <div className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-xs">
+              <div className="text-[10px] font-mono text-zinc-400">AI COPILOT</div>
+              <div className="text-lg font-extrabold text-zinc-700 dark:text-zinc-200 tracking-tight">Gemini 3.8 Flash</div>
+            </div>
           </div>
         </div>
 
         {/* ========================================================================= */}
-        {/* 3. INTERACTIVE LIVE SANDBOX WIDGET (SIMULATION / VOICE / TRANSFER) */}
+        {/* 3. LIVE INTERACTIVE SANDBOX WIDGET */}
         {/* ========================================================================= */}
-        <div id="interactive-lab" className="mt-16 max-w-5xl mx-auto">
+        <div id="interactive-lab" className="mt-14 max-w-5xl mx-auto">
           <div className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-neutral-950 shadow-2xl overflow-hidden p-6 sm:p-8">
             {/* Header with Navigation Pills using LayoutId */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-zinc-200 dark:border-zinc-800">
@@ -288,7 +280,7 @@ export const HomePage: React.FC = () => {
 
               {/* Shared Element LayoutId Pills */}
               <div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-mono">
-                {(['simulation', 'transfer', 'voice', 'radar'] as const).map(tab => (
+                {(['simulation', 'transfer', 'voice', 'radar', 'ledger'] as const).map(tab => (
                   <button
                     key={tab}
                     type="button"
@@ -299,7 +291,7 @@ export const HomePage: React.FC = () => {
                   >
                     {activeTab === tab && (
                       <motion.div
-                        layoutId="activeSandboxTab"
+                        layoutId="activeSandboxTabPill"
                         className="absolute inset-0 bg-white dark:bg-black rounded-lg shadow-sm border border-zinc-200 dark:border-zinc-700"
                         transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                       />
@@ -445,7 +437,7 @@ export const HomePage: React.FC = () => {
                 </motion.div>
               )}
 
-              {/* Transfer Card Tab (Kokonut UI Currency Transfer adapted for inventory) */}
+              {/* Transfer Card Tab */}
               {activeTab === 'transfer' && (
                 <motion.div
                   key="transfer"
@@ -460,7 +452,7 @@ export const HomePage: React.FC = () => {
                 </motion.div>
               )}
 
-              {/* AI Voice Tab (Kokonut UI AI Voice component) */}
+              {/* AI Voice Tab */}
               {activeTab === 'voice' && (
                 <motion.div
                   key="voice"
@@ -476,6 +468,7 @@ export const HomePage: React.FC = () => {
                 </motion.div>
               )}
 
+              {/* Radar Formula Tab */}
               {activeTab === 'radar' && (
                 <motion.div
                   key="radar"
@@ -499,13 +492,84 @@ export const HomePage: React.FC = () => {
                   </div>
                 </motion.div>
               )}
+
+              {/* Ledger Tab */}
+              {activeTab === 'ledger' && (
+                <motion.div
+                  key="ledger"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="pt-6 space-y-3 font-mono text-xs text-zinc-600 dark:text-zinc-400"
+                >
+                  <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-2">
+                    <div className="text-zinc-900 dark:text-white font-bold">DOUBLE-ENTRY ATOMIC AUDIT TRAIL</div>
+                    <div className="space-y-1.5 text-zinc-500 dark:text-zinc-400 text-xs">
+                      <div className="flex justify-between border-b border-zinc-200 dark:border-zinc-800 py-1.5">
+                        <span className="text-rose-500">-40 Units (TRANSFER_OUT)</span>
+                        <span>Location: WH-ANNEX/STOCK</span>
+                        <span className="text-zinc-400">Ref: TRF-2026-001</span>
+                      </div>
+                      <div className="flex justify-between py-1.5">
+                        <span className="text-emerald-500">+40 Units (TRANSFER_IN)</span>
+                        <span>Location: MWH/STOCK</span>
+                        <span className="text-zinc-400">Link ID: #8847</span>
+                      </div>
+                    </div>
+                    <div className="pt-2 text-zinc-700 dark:text-zinc-300 font-sans text-xs">
+                      Total company balance is strictly conserved with net delta = 0.
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. CORE PILLARS WITH 3D CARD FLIP (KOKONUT UI CARD FLIP) */}
+      {/* 4. THE 30-SECOND OPERATIONAL LOOP */}
+      {/* ========================================================================= */}
+      <section id="operational-loop" className="py-20 px-4 lg:px-8 max-w-7xl mx-auto border-t border-zinc-200 dark:border-zinc-800">
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+          <div className="text-xs font-mono uppercase tracking-widest text-zinc-500">
+            RAPID RESOLUTION
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+            The 30-Second Operational Loop
+          </h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            From risk detection to auditable ledger verification in five unambiguous steps.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          {[
+            { step: '01', title: 'Current State', desc: 'Monitor multi-warehouse physical balances & location splits.' },
+            { step: '02', title: 'Spot Risk', desc: 'Deterministic daily velocity detects stockout in 6.1 days.' },
+            { step: '03', title: 'What-If Lab', desc: 'Simulate transfer or supplier delay without modifying real DB.' },
+            { step: '04', title: 'Human Action', desc: 'Authorize transfer with single-click atomic transaction.' },
+            { step: '05', title: 'Verify Ledger', desc: 'Immediate ledger audit trail with immutable reference link.' }
+          ].map((item) => (
+            <div
+              key={item.step}
+              className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex flex-col justify-between shadow-xs hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors"
+            >
+              <div>
+                <div className="text-xs font-mono text-zinc-400 mb-2">{item.step}</div>
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">{item.title}</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-light">{item.desc}</p>
+              </div>
+              <div className="pt-4 text-zinc-400">
+                <ChevronRight className="h-4 w-4" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 5. ARCHITECTURAL INVARIANTS & 3D CARDS */}
       {/* ========================================================================= */}
       <section id="architecture" className="py-20 px-4 lg:px-8 max-w-7xl mx-auto border-t border-zinc-200 dark:border-zinc-800">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
@@ -548,51 +612,74 @@ export const HomePage: React.FC = () => {
             onCtaClick={() => navigate('/intelligence/scenarios')}
           />
         </div>
-      </section>
 
-      {/* ========================================================================= */}
-      {/* 5. 30-SECOND OPERATIONAL LOOP SUMMARY */}
-      {/* ========================================================================= */}
-      <section id="operational-loop" className="py-20 px-4 lg:px-8 max-w-7xl mx-auto border-t border-zinc-200 dark:border-zinc-800">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <div className="text-xs font-mono uppercase tracking-widest text-zinc-500">
-            RAPID RESOLUTION
+        {/* PostgreSQL Schema Code Block */}
+        <div className="mt-14 max-w-4xl mx-auto rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black p-6 font-mono text-xs shadow-xl">
+          <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 text-[11px]">
+            <span>stocksense_db_schema.sql</span>
+            <span>PostgreSQL 18 Atomic Storage</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
-            The 30-Second Operational Loop
-          </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            From risk detection to auditable ledger verification in five unambiguous steps.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          {[
-            { step: '01', title: 'Current State', desc: 'Monitor multi-warehouse physical balances & location splits.' },
-            { step: '02', title: 'Spot Risk', desc: 'Deterministic daily velocity detects stockout in 6.1 days.' },
-            { step: '03', title: 'What-If Lab', desc: 'Simulate transfer or supplier delay without modifying real DB.' },
-            { step: '04', title: 'Human Action', desc: 'Authorize transfer with single-click atomic transaction.' },
-            { step: '05', title: 'Verify Ledger', desc: 'Immediate ledger audit trail with immutable reference link.' }
-          ].map((item) => (
-            <div
-              key={item.step}
-              className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex flex-col justify-between shadow-xs"
-            >
-              <div>
-                <div className="text-xs font-mono text-zinc-400 mb-2">{item.step}</div>
-                <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">{item.title}</h3>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-light">{item.desc}</p>
-              </div>
-              <div className="pt-4 text-zinc-400">
-                <ChevronRight className="h-4 w-4" />
-              </div>
-            </div>
-          ))}
+          <pre className="pt-4 overflow-x-auto text-[11px] leading-relaxed text-zinc-600 dark:text-zinc-400">
+            <span className="text-zinc-400">-- Immutable Double-Entry Ledger Invariant</span>{'\n'}
+            <span className="text-purple-600 dark:text-purple-400 font-bold">CREATE TABLE</span> stock_movements ({'\n'}
+            {'  '}id <span className="text-blue-600 dark:text-blue-400">SERIAL PRIMARY KEY</span>,{'\n'}
+            {'  '}product_id <span className="text-blue-600 dark:text-blue-400">INTEGER NOT NULL</span>,{'\n'}
+            {'  '}movement_type <span className="text-blue-600 dark:text-blue-400">VARCHAR(50) NOT NULL</span>,{'\n'}
+            {'  '}quantity <span className="text-blue-600 dark:text-blue-400">DOUBLE PRECISION NOT NULL</span>,{'\n'}
+            {'  '}transfer_link_id <span className="text-blue-600 dark:text-blue-400">INTEGER</span>,{'\n'}
+            {'  '}created_at <span className="text-blue-600 dark:text-blue-400">TIMESTAMPTZ DEFAULT NOW()</span>{'\n'}
+            );{'\n\n'}
+            <span className="text-emerald-600 dark:text-emerald-400">✓ Invariant: Net balance delta strictly equals 0.0</span>{'\n'}
+            <span className="text-emerald-600 dark:text-emerald-400">✓ Grounding: Real DB state fed to gemini-3.8-flash</span>
+          </pre>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 6. TRUST & FOOTER */}
+      {/* 6. OPTIONAL INTERACTIVE MOUSE SPRING PLAYGROUND (AT BOTTOM) */}
+      {/* ========================================================================= */}
+      <section className="py-16 px-4 lg:px-8 max-w-7xl mx-auto border-t border-zinc-200 dark:border-zinc-800">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 bg-zinc-100 dark:bg-neutral-950 p-8 sm:p-12 rounded-3xl border border-zinc-200 dark:border-zinc-800">
+          <div className="max-w-lg space-y-4">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+              Interactive UI Physics
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+              Test the Repelling Cursor Physics
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 font-light leading-relaxed">
+              Hover over the card to test the Kokonut UI spring-repulsion physics on the dot grid.
+            </p>
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={handleLaunchDemo}
+                className="px-5 py-2.5 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-black font-bold text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all cursor-pointer shadow-md"
+              >
+                Enter App Dashboard
+              </button>
+            </div>
+          </div>
+
+          <div className="w-full max-w-md">
+            <MouseEffectCard
+              title="StockSense"
+              subtitle="Hover to repel dots"
+              topText="Kokonut Physics"
+              topSubtext="Spring Repulsion"
+              primaryCtaText="Launch Demo"
+              onPrimaryCtaClick={handleLaunchDemo}
+              secondaryCtaText="Guide"
+              onSecondaryCtaClick={() => navigate('/guide')}
+              footerText="Active Multi-Warehouse Mesh"
+              className="w-full"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 7. TRUST & FOOTER */}
       {/* ========================================================================= */}
       <footer className="border-t border-zinc-200 dark:border-zinc-800 py-12 px-4 lg:px-8 max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
